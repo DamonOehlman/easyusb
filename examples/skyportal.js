@@ -6,5 +6,9 @@ var devices = [
 
 easyusb(devices)
   .read(0x20, function(err, data) {
+    if (err) {
+      return console.error(err);
+    }
+
     console.log('read data: ', data);
   });
