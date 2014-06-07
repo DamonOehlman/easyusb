@@ -26,6 +26,8 @@ module.exports = function(opts) {
   var device = new EventEmitter();
   var reattach = false;
   var target;
+  var input;
+  var output;
 
   function isMatch(data) {
     var a = readDescriptor(data);
@@ -69,7 +71,15 @@ module.exports = function(opts) {
         return device.error(e);
       }
 
-      console.log(di);
+      // find the input endpoint
+      input = device.input = di.endpoints.filter(function(iface) {
+        return iface.direction == 'in';
+      })[0];
+
+      // find the output endpoint
+      output = device.output = di.endpoints.filter(function(iface) {
+        return iface.direction == 'out';
+      })[0];
 
       device.open = true;
       device.emit('open');
@@ -83,18 +93,23 @@ module.exports = function(opts) {
     ];
   }
 
-  device.read = function(callback) {
+  device.read = function(size, callback) {
     if (! target) {
       return callback(new Error('could not find device'));
     }
 
     if (! device.open) {
       return device.once('open', function() {
-        device.read(callback);
+        device.read(size, callback);
       });
     }
 
-    console.log('need to read from device', device.target);
+    // if we have no input endpoint, then report unable to read
+    if (! input) {
+      return callback(new Error('no input endpoint - cannot read from device'));
+    }
+
+    input.transfer(size, callback);
   };
 
   if (typeof opts == 'string' || (opts instanceof String)) {
