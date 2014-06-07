@@ -1,3 +1,4 @@
+var debug = require('debug')('easyusb');
 var EventEmitter = require('events').EventEmitter;
 var usb = require('usb');
 
@@ -55,13 +56,16 @@ module.exports = function(opts) {
 
   function open() {
     try {
+      debug('attempting to open device');
       target.open();
     }
     catch (e) {
+      debug('captured error opening device: ', e);
       return device.emit('error', e);
     }
 
     // reset the device and then open the interface
+    debug('resetting device');
     target.reset(function(err) {
       var di;
 
@@ -70,10 +74,12 @@ module.exports = function(opts) {
       }
 
       // select the portal interface
-      di = device.interface = target.interface(0);
+      debug('selecting device interface');
+      di = device.interface = target.interface((opts || {}).interface || 0);
 
       // if the kernel driver is active for the interface, release
       if (di.isKernelDriverActive()) {
+        debug('detaching kernel driver');
         di.detachKernelDriver();
 
         // flag that we need to reattach the kernel driver
@@ -82,9 +88,11 @@ module.exports = function(opts) {
 
       // claim the interface (um, horizon)
       try {
+        debug('claiming interface');
         di.claim();
       }
       catch (e) {
+        debug('error claiming interface: ', e);
         return device.error(e);
       }
 
@@ -98,6 +106,7 @@ module.exports = function(opts) {
         return iface.direction == 'out';
       })[0];
 
+      debug('device successfully opened');
       device.open = true;
       device.emit('open');
     });
@@ -109,6 +118,45 @@ module.exports = function(opts) {
       data.deviceDescriptor.idProduct
     ];
   }
+
+  /**
+    ### device.close(callback)
+
+    Attempt to close the device interface.
+  **/
+  device.close = function(callback) {
+    // ensure we have a callback
+    callback = callback || function() {};
+
+    if (! device.interface) {
+      return callback(new Error('not connected'));
+    }
+
+    debug('releasing interface');
+    device.interface.release(function(err) {
+      if (err) {
+        return callback(err);
+      }
+
+      // release the input and output endpoints
+      input = device.input = undefined;
+      output = device.output = undefined;
+
+      if (reattach) {
+        debug('reattaching kernel driver');
+        device.interface.attachKernelDriver();
+        reattach = false;
+      }
+
+      // release the device reference
+      device.interface = undefined;
+      device.open = false;
+
+      debug('closing device');
+      device.close();
+      callback();
+    });
+  };
 
   /**
     ### device.read(size, callback)
@@ -133,6 +181,7 @@ module.exports = function(opts) {
       return callback(new Error('no input endpoint - cannot read from device'));
     }
 
+    debug('attempting to read ' + size + ' bytes from the input endpoint');
     input.transfer(size, callback);
   };
 
