@@ -22,11 +22,18 @@ specific `vendor:product` device string:
 
 ```js
 var easyusb = require('easyusb');
+var device = easyusb('0x12ba:0x0100');
 
-easyusb('0x12ba:0x0100')
-  .read(function(err, data) {
-    console.log('read data: ', data);
-  });
+
+device.read(64, function(err, data) {
+  if (err) {
+    console.error(err);
+    return device.close();
+  }
+
+  console.log('read data: ', data);
+  device.close();
+});
 
 ```
 
@@ -44,6 +51,10 @@ var devices = [
 
 easyusb(devices)
   .read(0x20, function(err, data) {
+    if (err) {
+      return console.error(err);
+    }
+
     console.log('read data: ', data);
   });
 
@@ -57,6 +68,10 @@ Create a patched `EventEmitter` that will provide the ability to interact with
 a usb device matching the specified criteria specified in `opts`.  Devices can
 be specified either specifying `opts.devices`, or passing through an array of
 vendor / product pairs or a single vendor:product device string.
+
+### device.close(callback)
+
+Attempt to close the device interface.
 
 ### device.read(size, callback)
 
