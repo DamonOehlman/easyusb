@@ -1,6 +1,6 @@
 {
   "name": "easyusb",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Simplified access to USB devices using the awesome usb package",
   "main": "index.js",
   "scripts": {
