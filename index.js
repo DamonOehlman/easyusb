@@ -73,6 +73,10 @@ module.exports = function(opts) {
         return device.emit('error', err);
       }
 
+      debug('device interfaces: ' + target.interfaces.map(function(iface) {
+        return '#' + iface.id;
+      }));
+
       // select the portal interface
       debug('selecting device interface');
       di = device.interface = target.interface((opts || {}).interface || 0);
