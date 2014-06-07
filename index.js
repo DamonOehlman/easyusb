@@ -20,6 +20,11 @@ var usb = require('usb');
   controller.  This example demonstrates how to connect to a device with a
   specific `vendor:product` device string:
 
+  __NOTE:__  Interfacing with the guitar hero controller is proving difficult
+  and if you are trying to achieve this for anything, then I'd recommend
+  checking out the [pull-hid](https://github.com/DamonOehlman/pull-hid) as
+  a much more robust alternative.
+
   <<< examples/gh-controller.js
 
   The next example shows how the
@@ -201,6 +206,8 @@ module.exports = function(opts) {
 
   /**
     ### device.write(data, callback)
+
+    Write the specified `data` to the device.
 
   **/
   device.write = function(data, callback) {

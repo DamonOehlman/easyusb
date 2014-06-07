@@ -20,10 +20,14 @@ The following example will demonstrate interfacing with a PS3 guitar hero
 controller.  This example demonstrates how to connect to a device with a
 specific `vendor:product` device string:
 
+__NOTE:__  Interfacing with the guitar hero controller is proving difficult
+and if you are trying to achieve this for anything, then I'd recommend
+checking out the [pull-hid](https://github.com/DamonOehlman/pull-hid) as
+a much more robust alternative.
+
 ```js
 var easyusb = require('easyusb');
 var device = easyusb('0x12ba:0x0100');
-
 
 device.read(function(err, data) {
   if (err) {
@@ -78,6 +82,10 @@ Attempt to close the device interface.
 
 Attempt to read `size` bytes from the input endpoint of the connected
 usb device.
+
+### device.write(data, callback)
+
+Write the specified `data` to the device.
 
 ## License(s)
 
