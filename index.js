@@ -166,6 +166,12 @@ module.exports = function(opts) {
 
   **/
   device.read = function(size, callback) {
+    // if size is a function, then remap args
+    if (typeof size == 'function') {
+      callback = size;
+      size = 0;
+    }
+
     if (! target) {
       return callback(new Error('could not find device'));
     }
@@ -179,6 +185,10 @@ module.exports = function(opts) {
     // if we have no input endpoint, then report unable to read
     if (! input) {
       return callback(new Error('no input endpoint - cannot read from device'));
+    }
+
+    if (! size) {
+      size = input.descriptor.wMaxPacketSize;
     }
 
     debug('attempting to read ' + size + ' bytes from the input endpoint');
