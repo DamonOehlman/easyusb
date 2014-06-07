@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/DamonOehlman/easyusb/issues"
   },
-  "homepage": "https://github.com/DamonOehlman/easyusb"
+  "homepage": "https://github.com/DamonOehlman/easyusb",
+  "dependencies": {
+    "usb": "~0.3"
+  }
 }
