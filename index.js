@@ -1,6 +1,26 @@
 var EventEmitter = require('events').EventEmitter;
 var usb = require('usb');
 
+/**
+  # easyusb
+
+  This module wraps the [usb](https://github.com/nonolith/node-usb) package to
+  provide a slightly simpler interface to working with USB devices.  It is not
+  a full-featured implementation and at this point in time is focused on
+  reading from devices.
+
+  For more complex applications I would recommend either looking at the `usb`
+  package or potentially the [node-hid](https://github.com/node-hid/node-hid)
+  project.
+
+  ## Example Usage (Proposed)
+
+  The following example will demonstrate interfacing with a PS3 guitar hero
+  controller.
+
+  <<< examples/gh-controller.js
+
+**/
 module.exports = function(opts) {
   var devices = (opts || {}).devices || [];
   var device = new EventEmitter();
