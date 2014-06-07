@@ -199,6 +199,30 @@ module.exports = function(opts) {
     input.transfer(size, callback);
   };
 
+  /**
+    ### device.write(data, callback)
+
+  **/
+  device.write = function(data, callback) {
+    if (! target) {
+      return callback(new Error('could not find device'));
+    }
+
+    if (! device.open) {
+      return device.once('open', function() {
+        device.write(data, callback);
+      });
+    }
+
+    if (! Buffer.isBuffer(data)) {
+      data = new Buffer(data);
+    }
+
+    // send the data
+    debug('--> ', data.length, data);
+    output.transfer(data, callback);
+  };
+
   if (typeof opts == 'string' || (opts instanceof String)) {
     devices = [ opts.split(':') ]
   }
