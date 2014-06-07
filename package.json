@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/DamonOehlman/easyusb",
   "dependencies": {
+    "debug": "^1",
     "usb": "~0.3"
   }
 }
