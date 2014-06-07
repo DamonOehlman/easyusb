@@ -28,6 +28,15 @@ var usb = require('usb');
 
   <<< examples/skyportal.js
 
+  ## Reference
+
+  ### easyusb(opts) => EventEmtiter
+
+  Create a patched `EventEmitter` that will provide the ability to interact with
+  a usb device matching the specified criteria specified in `opts`.  Devices can
+  be specified either specifying `opts.devices`, or passing through an array of
+  vendor / product pairs or a single vendor:product device string.
+
 **/
 module.exports = function(opts) {
   var devices = (opts || {}).devices || [];
@@ -101,6 +110,13 @@ module.exports = function(opts) {
     ];
   }
 
+  /**
+    ### device.read(size, callback)
+
+    Attempt to read `size` bytes from the input endpoint of the connected
+    usb device.
+
+  **/
   device.read = function(size, callback) {
     if (! target) {
       return callback(new Error('could not find device'));
