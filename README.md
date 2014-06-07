@@ -25,7 +25,7 @@ var easyusb = require('easyusb');
 var device = easyusb('0x12ba:0x0100');
 
 
-device.read(64, function(err, data) {
+device.read(function(err, data) {
   if (err) {
     console.error(err);
     return device.close();
@@ -44,19 +44,20 @@ vendor / product combinations that we know a portal might have:
 
 ```js
 var easyusb = require('easyusb');
-var devices = [
+var device = easyusb([
   [ 0x1430, 0x1f17 ],
   [ 0x1430, 0x0150 ]
-];
+]);
 
-easyusb(devices)
-  .read(0x20, function(err, data) {
-    if (err) {
-      return console.error(err);
-    }
+device.read(0x20, function(err, data) {
+  if (err) {
+    console.error(err);
+    return device.close();
+  }
 
-    console.log('read data: ', data);
-  });
+  console.log('read data: ', data);
+  device.close();
+});
 
 ```
 
