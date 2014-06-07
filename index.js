@@ -13,12 +13,20 @@ var usb = require('usb');
   package or potentially the [node-hid](https://github.com/node-hid/node-hid)
   project.
 
-  ## Example Usage (Proposed)
+  ## Example Usage
 
   The following example will demonstrate interfacing with a PS3 guitar hero
-  controller.
+  controller.  This example demonstrates how to connect to a device with a
+  specific `vendor:product` device string:
 
   <<< examples/gh-controller.js
+
+  The next example shows how the
+  [skyportal](https://github.com/DamonOehlman/skyportal) can be simplified
+  using the `easyusb` module.  In this example, we look for any of the matching
+  vendor / product combinations that we know a portal might have:
+
+  <<< examples/skyportal.js
 
 **/
 module.exports = function(opts) {

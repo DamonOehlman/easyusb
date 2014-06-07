@@ -14,16 +14,36 @@ project.
 
 [![experimental](https://img.shields.io/badge/stability-experimental-red.svg)](https://github.com/badges/stability-badges) 
 
-## Example Usage (Proposed)
+## Example Usage
 
 The following example will demonstrate interfacing with a PS3 guitar hero
-controller.
+controller.  This example demonstrates how to connect to a device with a
+specific `vendor:product` device string:
 
 ```js
 var easyusb = require('easyusb');
 
 easyusb('0x12ba:0x0100')
   .read(function(err, data) {
+    console.log('read data: ', data);
+  });
+
+```
+
+The next example shows how the
+[skyportal](https://github.com/DamonOehlman/skyportal) can be simplified
+using the `easyusb` module.  In this example, we look for any of the matching
+vendor / product combinations that we know a portal might have:
+
+```js
+var easyusb = require('easyusb');
+var devices = [
+  [ 0x1430, 0x1f17 ],
+  [ 0x1430, 0x0150 ]
+];
+
+easyusb(devices)
+  .read(0x20, function(err, data) {
     console.log('read data: ', data);
   });
 
