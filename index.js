@@ -102,7 +102,7 @@ module.exports = function(opts) {
       }
       catch (e) {
         debug('error claiming interface: ', e);
-        return device.error(e);
+        return device.emit('error', e);
       }
 
       // find the input endpoint
